@@ -62,13 +62,9 @@ public class BoardController {
     // http://localhost:8080/board/1
     @GetMapping("/board/{id}")
     public String detailPage(@PathVariable(name = "id") Integer id, Model model) {
-        // 유효성 검사 , 인증 검사
-
         //Board board = boardNativeRepository.findById(id);
         Board board = boardPersistRepository.findById(id);
-
         model.addAttribute("board", board);
-
         return "board/detail";
     }
 
@@ -76,8 +72,8 @@ public class BoardController {
     // /board/{{board.id}}/delete
     @PostMapping("/board/{id}/delete")
     public String deleteProc(@PathVariable(name = "id") Integer id) {
-        boardNativeRepository.deleteById(id);
-
+        //boardNativeRepository.deleteById(id);
+        boardPersistRepository.deleteById(id);
         // PRG 패턴( Post-> Redirect -> Get) 적용
         return "redirect:/";
     }
