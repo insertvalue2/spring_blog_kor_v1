@@ -1,7 +1,6 @@
-package com.tenco.blog.repository;
+package com.tenco.blog.board;
 
 
-import com.tenco.blog.model.Board;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;

@@ -1,7 +1,6 @@
-package com.tenco.blog.controller;
+package com.tenco.blog.board;
 
-import com.tenco.blog.model.Board;
-import com.tenco.blog.repository.BoardNativeRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import java.util.List;
 public class BoardController {
     // DI
     private final BoardNativeRepository boardNativeRepository;
+    private final BoardPersistRepository boardPersistRepository;
 
     /**
      * 게시글 작성 화면 요청
@@ -37,17 +37,10 @@ public class BoardController {
      * 주소설계 : http://localhost:8080/board/save-form
      */
     @PostMapping("/board/save")
-    public String saveProc(
-            @RequestParam("username") String username,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content) {
-        log.info("username : " + username);
-        log.info("title : " + title);
-        log.info("content : " + content);
-        // insert + 트랜잭션 처리
-        boardNativeRepository.save(title, content, username);
-        // redirect <-- 다시 URL 요청 해 !
-        //return "redirect:/";
+    // 사용자 요청 -> HTTP 요청 메시지(Post)
+    public String saveProc(BoardRequest.SaveDTO saveDTO) {
+        Board board = saveDTO.toEntity();
+        boardPersistRepository.save(board);
         return "redirect:/";
     }
 
