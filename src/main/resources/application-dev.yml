@@ -24,17 +24,19 @@ spring:
     url: jdbc:mysql://localhost:3306/myblog?serverTimezone=Asia/Seoul
     username: root
     password: root
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:test
-#    username: sa
-#    password:
+  #    driver-class-name: org.h2.Driver
+  #    url: jdbc:h2:mem:test
+  #    username: sa
+  #    password:
   h2:
     console:
       enabled: true
 
-#      초기 데이터 설정
+  #      초기 데이터 설정
+  # SQL 초기화 설정
   sql:
     init:
+      mode: always  # 외부 DB(MySQL)에서도 실행되도록 설정
       data-locations:
         - classpath:db/data.sql
 
@@ -51,7 +53,8 @@ spring:
         format_sql: true
         # N + 1 문제를 완화 하기위한 완충 장치 설정
         # 기본 WHERE 절에서 in 절(in 쿼리로 변경 해준다)
-        default_batch_fetch_size: 10
+        default_batch_fetch_size: 100
     # data.sql 파일을 하이버네티트 초기화 이후에 실행
 
-    defer- -initialization: true
+    # data.sql 파일을 Hibernate 초기화 이후에 실행
+    defer-datasource-initialization: true

@@ -13,6 +13,14 @@ public class UserRepository {
     //DI - 스프링 프레임 워크가 주소값 자동 주입
     private final EntityManager em;
 
+    public User findById(Integer id) {
+       User user = em.find(User.class, id);
+       if(user == null) {
+           throw new RuntimeException("사용자를 찾을 수 없습니다");
+       }
+       return user;
+    }
+
     // 회원 가입 요청시 --> INSERT
     @Transactional
     public User save(User user) {
