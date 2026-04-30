@@ -15,14 +15,31 @@ public class UserController {
     private final HttpSession httpSession;
     private final UserRepository userRepository;
 
-    // 프로필 화면 요청
-    // /user/update-form
+    // 프로필 수정 기능 요청
+    @PostMapping("/user/update")
+    public String updateProc(UserRequest.UpdateDTO updateDTO, HttpSession session) {
+
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            return "redirect:/login-form";
+        }
+        try {
+            updateDTO.validate();
+            // 더티 체킹 전략
+            User userEntity = userRepository.updateById(sessionUser.getId(), updateDTO);
+            // 세션 동기화 처리
+            session.setAttribute("sessionUser", userEntity);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return "redirect:/";
+    }
 
 
     @GetMapping("/user/update-form")
     public String updateFormPage(HttpSession session, Model model) {
         // 인증 검사
-        User sessionUser = (User)session.getAttribute("sessionUser");
+        User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             return "redirect:/login-form";
         }
@@ -51,7 +68,7 @@ public class UserController {
         User sessionUser = userRepository
                 .findByUsernameAndPassword(loginDTO.getUsername(), loginDTO.getPassword());
 
-        if(sessionUser == null) {
+        if (sessionUser == null) {
             // 로그인 실패 (username, password) 불 일치
             throw new IllegalArgumentException("사용자명 또는 비밀번호가 잘못 되었습니다");
         }
@@ -101,7 +118,7 @@ public class UserController {
         // 회원가입 요청 전 ==> 중복 username 검사
         User userCheckName = userRepository.findByUsername(joinDTO.getUsername());
 
-        if(userCheckName != null) {
+        if (userCheckName != null) {
             throw new IllegalArgumentException("이미 사용중인 username 입니다 : "
                     + userCheckName.getUsername());
         }

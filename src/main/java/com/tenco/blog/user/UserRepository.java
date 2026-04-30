@@ -64,4 +64,11 @@ public class UserRepository {
             return null;
         }
     }
+
+    @Transactional
+    public User updateById(Integer id, UserRequest.UpdateDTO updateDTO) {
+        User userEntity = findById(id); // 영속성 컨텍스트에 관리되는 엔티티
+        userEntity.setPassword(updateDTO.getPassword()); // 객체의 상태값 변경 함. - password
+        return userEntity;
+    }
 }
