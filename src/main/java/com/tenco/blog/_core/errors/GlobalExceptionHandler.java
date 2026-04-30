@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice // IoC
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(Exception400.class)
     public String ex400(Exception400 e, HttpServletRequest request) {
         log.warn("=== 400 Bad Request 에러 발생 ===");

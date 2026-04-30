@@ -20,9 +20,7 @@ public class UserController {
     public String updateProc(UserRequest.UpdateDTO updateDTO, HttpSession session) {
 
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            return "redirect:/login-form";
-        }
+
         try {
             updateDTO.validate();
             // 더티 체킹 전략
@@ -40,9 +38,6 @@ public class UserController {
     public String updateFormPage(HttpSession session, Model model) {
         // 인증 검사
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            return "redirect:/login-form";
-        }
 
         User userEntity = userRepository.findById(sessionUser.getId());
         userEntity.setPassword("");
@@ -54,6 +49,7 @@ public class UserController {
 
     // 로그인 화면 요청
     // 주소 설계 - http://localhost:8080/login-form
+    // /user/** 아님
     @GetMapping("/login-form")
     public String loginFormPage() {
         return "user/login-form";
@@ -72,14 +68,8 @@ public class UserController {
             // 로그인 실패 (username, password) 불 일치
             throw new IllegalArgumentException("사용자명 또는 비밀번호가 잘못 되었습니다");
         }
-
         // 여기에 코드가 도달 한다면 우리 DB에 정상 사용자임을 논리적으로 확인 됨.
         httpSession.setAttribute("sessionUser", sessionUser);
-
-        System.out.println("로그인 성공");
-        System.out.println("로그인 사용자 : " + sessionUser.getUsername());
-        System.out.println("로그인 이메일 : " + sessionUser.getEmail());
-
         return "redirect:/";
     }
 
@@ -91,7 +81,6 @@ public class UserController {
         // 세션 메모리에 내 정보를 없애 버림
         // 로그 아웃
         httpSession.invalidate();
-
         return "redirect:/";
     }
 
@@ -99,7 +88,6 @@ public class UserController {
     // 주소 설계 - http://localhost:8080/join-form
     @GetMapping("/join-form")
     public String joinFormPage() {
-
         return "user/join-form";
     }
 
@@ -110,22 +98,16 @@ public class UserController {
     @PostMapping("/join")
     public String joinProc(UserRequest.JoinDTO joinDTO) {
 
-        log.info("username " + joinDTO.getUsername());
-        log.info("password " + joinDTO.getPassword());
-        log.info("email " + joinDTO.getEmail());
         // 1. 유효성 검사 하기
         joinDTO.validate(); // 유효성 검사 ---> 오류 --> 예외 처리 넘어감
         // 회원가입 요청 전 ==> 중복 username 검사
         User userCheckName = userRepository.findByUsername(joinDTO.getUsername());
-
         if (userCheckName != null) {
             throw new IllegalArgumentException("이미 사용중인 username 입니다 : "
                     + userCheckName.getUsername());
         }
         userRepository.save(joinDTO.toEntity());
-        // TODO
-        // 로그인 화면으로 리다이렉트 처리 예정
-        return "redirect:/";
+        return "redirect:/login-form";
     }
 
 }
