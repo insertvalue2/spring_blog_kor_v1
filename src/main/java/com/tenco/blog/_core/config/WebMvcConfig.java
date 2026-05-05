@@ -3,9 +3,7 @@ package com.tenco.blog._core.config;
 import com.tenco.blog._core.interceptor.LoginInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,11 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // @Component
 @Configuration // IoC 대상 - 하나 이상의 IoC 처리를 하고 싶을 때 사용 한다.
-@RequiredArgsConstructor // DI
 public class WebMvcConfig implements WebMvcConfigurer {
 
-
-    private final LoginInterceptor loginInterceptor;
+    @Autowired // DI 처리
+    private LoginInterceptor loginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -31,7 +28,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/board/{id:\\d+}");
                 // 예: board/1, board/7 등은 로그인 없어도 접근 가능
     }
-
 
 }
 
