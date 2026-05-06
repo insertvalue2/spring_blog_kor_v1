@@ -112,8 +112,21 @@ public class BoardService {
         log.info("게시글 삭제 완료 - ID : {}", id);
     }
 
-    // 게시글 수정 화면 요청시 인가 처리
-    // ... ( )....
+
+    /**
+     * 게시글 수정 화면 요청(인가 처리)
+     * @param id (Board PK)
+     * @param sessionUser (로그인한 사용자 정보)
+     * @return Board
+     */
+    public Board findByIdAndCheckOwner(Integer id, User sessionUser) {
+        log.info("게시글 수정 화면 조회 서비스");
+        Board boardEntity = findById(id);
+        boardEntity.isOwner(sessionUser.getId());
+        log.info("게시글 수정 조회 완료 - 제목: {}, 작성자: {}",
+                boardEntity.getTitle(), boardEntity.getUser().getUsername());
+        return boardEntity;
+    }
 }
 
 
