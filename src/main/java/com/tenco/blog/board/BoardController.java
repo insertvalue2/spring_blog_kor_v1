@@ -78,6 +78,7 @@ public class BoardController {
     @GetMapping("/board/{id}/update-form")
     public String updateFormPage(@PathVariable(name = "id") Integer id, Model model, HttpSession session) {
 
+       // findById <-- 상세보기 화면 요청이라서 누가 요청 가능 (즉 인가처리 안되고 있음)
        Board boardEntity = boardService.findById(id);
        model.addAttribute("board", boardEntity);
        return "board/update-form";

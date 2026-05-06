@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("""
         SELECT u FROM User u WHERE u.username = :username
     """)
-    Optional<User> findByUsername();
+    Optional<User> findByUsername(@Param("username") String username);
 
     // 사용자명과 비밀번호로 사용자 조회(로그인용)
     @Query("""

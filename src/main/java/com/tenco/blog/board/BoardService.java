@@ -111,6 +111,9 @@ public class BoardService {
         boardRepository.deleteById(id);
         log.info("게시글 삭제 완료 - ID : {}", id);
     }
+
+    // 게시글 수정 화면 요청시 인가 처리
+    // ... ( )....
 }
 
 
