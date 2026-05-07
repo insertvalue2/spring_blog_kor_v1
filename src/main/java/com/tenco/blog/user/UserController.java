@@ -15,24 +15,21 @@ public class UserController {
 
     private final UserService userService;
 
-
     // 프로필 수정 기능 요청
     @PostMapping("/user/update")
     public String updateProc(UserRequest.UpdateDTO updateDTO, HttpSession session) {
         updateDTO.validate();
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User userEntity = userService.updateById(sessionUser.getId(), updateDTO);
-        // 세션 동기화 처리
-        session.setAttribute("sessionUser", userEntity);
+        UserResponse.SessionDTO sessionUser = (UserResponse.SessionDTO) session.getAttribute("sessionUser");
+        userService.회원정보수정(sessionUser.getId(), updateDTO, session);
         return "redirect:/";
     }
 
     // 프로필 화면 요청
     @GetMapping("/user/update-form")
     public String updateFormPage(HttpSession session, Model model) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User userEntity = userService.findById(sessionUser.getId());
-        model.addAttribute("user", userEntity);
+        UserResponse.SessionDTO sessionUser = (UserResponse.SessionDTO) session.getAttribute("sessionUser");
+        UserResponse.SessionDTO sessionDTO = userService.회원정보수정화면(sessionUser.getId());
+        model.addAttribute("user", sessionDTO);
         return "user/update-form";
     }
 
@@ -46,11 +43,11 @@ public class UserController {
 
     // 로그인 기능 요청
     @PostMapping("/login")
-    public String loginProc(UserRequest.LoginDTO loginDTO, HttpSession session) {
+    public String loginProc(UserRequest.LoginDTO reqLoginDTO, HttpSession session) {
         // 인증 검사 x, 유효성 검사 o
-        loginDTO.validate();
-        User userEntity = userService.login(loginDTO);
-        session.setAttribute("sessionUser", userEntity);
+        reqLoginDTO.validate();
+        UserResponse.SessionDTO sessionDTO = userService.로그인(reqLoginDTO);
+        session.setAttribute("sessionUser", sessionDTO);
         return "redirect:/";
     }
 
@@ -76,7 +73,7 @@ public class UserController {
     public String joinProc(UserRequest.JoinDTO joinDTO) {
         //  인증검사 x, 유효성 검사 하기 o
         joinDTO.validate();
-        userService.join(joinDTO);
+        userService.회원가입(joinDTO);
         return "redirect:/login-form";
     }
 

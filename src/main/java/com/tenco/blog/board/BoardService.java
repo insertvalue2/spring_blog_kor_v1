@@ -44,6 +44,7 @@ public class BoardService {
     public List<BoardResponse.ListDTO> 게시글목록() {
         log.info("게시글 목록 조회 서비스");
         List<Board> boardList = boardRepository.findAllJoinUser();
+        boardList.get(0).getUser(); // LAZY 로딩 --> 한 번더 쿼리 던짐
         log.info("게시글 목록 조회 완료 - 총 : {}", boardList.size());
         return boardList.stream()
                 .map(BoardResponse.ListDTO::new) // map 닫기
