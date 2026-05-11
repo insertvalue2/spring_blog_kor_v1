@@ -44,6 +44,7 @@ public class BoardResponse {
         private String content;
         private String username;
         private Integer userId; //  user PK
+        private boolean isOwner;
 
         public DetailDTO(Board board) {
             this.id = board.getId();
@@ -52,6 +53,18 @@ public class BoardResponse {
             if(board.getUser() != null) {
                 this.username = board.getUser().getUsername();
                 this.userId = board.getUser().getId();
+            }
+        }
+
+        // 소유자 확인
+        public boolean checkIsOwner(Integer sessionUserId) {
+            if(sessionUserId == null) {
+                return false;
+            }
+            if (sessionUserId.equals(this.userId)) {
+                return true;
+            } else {
+                return false;
             }
         }
 
